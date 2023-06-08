@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { hashPassword } from 'src/common/functions/hash';
 import { InjectModel } from '@nestjs/mongoose';
-import { User } from './entities/user.entity';
+import { Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
+import { User } from './entities/user.entity';
 
 @Injectable()
 export class UsersService {
@@ -23,7 +24,10 @@ export class UsersService {
   ];
 
   create(createUserDto: CreateUserDto) {
-    const createdUser = this.userModel.create(createUserDto);
+    const createdUser = this.userModel.create({
+      ...createUserDto,
+      password: hashPassword(createUserDto.password),
+    });
     return createdUser;
   }
 

@@ -8,7 +8,7 @@ import {
   Delete,
   HttpException,
   HttpStatus,
-  UseGuards
+  UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -18,24 +18,23 @@ import { AuthGuard } from '../auth/auth.guard';
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) { }
+  constructor(private readonly usersRepository: UsersService) {}
 
   @UseGuards(AuthGuard)
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
-
     if (createUserDto.age > 100) {
-       throw new InvalidAgeException()
+      throw new InvalidAgeException();
     }
 
-    return this.usersService.create(createUserDto);
+    return this.usersRepository.create(createUserDto);
   }
-  
+
   @UseGuards(AuthGuard)
   @Get()
   findAll() {
     try {
-      return this.usersService.findAll();
+      return this.usersRepository.findAll();
     } catch (error) {
       throw new HttpException(
         {
@@ -52,9 +51,9 @@ export class UsersController {
 
   @UseGuards(AuthGuard)
   @Get(':username')
-  find(@Param('username') username: string){
+  find(@Param('username') username: string) {
     try {
-      return this.usersService.find(username);
+      return this.usersRepository.find(username);
     } catch (error) {
       throw new HttpException(
         {
@@ -73,7 +72,7 @@ export class UsersController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     try {
-      return this.usersService.findOne(id);
+      return this.usersRepository.findOne(id);
     } catch (error) {
       throw new HttpException(
         {
@@ -92,7 +91,7 @@ export class UsersController {
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     try {
-      return this.usersService.update(id, updateUserDto);
+      return this.usersRepository.update(id, updateUserDto);
     } catch (error) {
       throw new HttpException(
         {
@@ -111,7 +110,7 @@ export class UsersController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     try {
-      return this.usersService.remove(id);
+      return this.usersRepository.remove(id);
     } catch (error) {
       throw new HttpException(
         {
